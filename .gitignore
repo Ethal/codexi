@@ -1,0 +1,13 @@
+/target
+Cargo.lock
+.cargo/
+*.sh
+*.bin
+*.toml
+*.bck
+*.csv
+*.txt
+*.zip
+!Cargo.toml
+CHANGELOG.md
+.DS_Store
