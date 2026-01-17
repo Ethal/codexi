@@ -1,88 +1,144 @@
-// src/core/wammet/viewer.rs
+// src/core/wallet/viewer.rs
 
 use thousands::Separable;
+use owo_colors::{OwoColorize, Style};
 
 use super::codexi::Codexi;
 use super::codexi::SearchItem;
 use super::codexi::BalanceResult;
 use super::codexi::ResumeResult;
+use super::operation_flow::OperationFlow;
 
 /// Methods for viewing codexi data
 impl Codexi {
-    /// view snapshot
+    /// view to list the snapshot file
     pub fn view_snapshot(datas: &[String]) {
-        println!("┌-----------------------------┐");
-        println!("|Snapshot(s)                  |");
-        println!("├-----------------------------┤");
-        for f in datas {
-            println!("|{} |", f);
+        println!("┌─────────────────────────────┐");
+        let title_text = format!("{:<28}", "Snapshot(s)");
+        println!("│ {}│", title_text.cyan().bold());
+        println!("├─────────────────────────────┤");
+        if datas.len() == 0 {
+            println!("│ {:<28}│", "No snapshot");
+        } else {
+            for f in datas {
+                println!("│ {:<28}│", f);
+            }
         }
-        println!("└-----------------------------┘");
+        println!("└─────────────────────────────┘");
     }
-    /// view archive
+    /// view to list the archive file
     pub fn view_archive(datas: &[String]) {
-        println!("┌-----------------------------┐");
-        println!("|Archive(s)                   |");
-        println!("├-----------------------------┤");
-        for f in datas {
-            println!("|{}      |", f);
+        println!("┌─────────────────────────────┐");
+        let title_text = format!("{:<28}", "Archive(s)");
+        println!("│ {}│", title_text.cyan().bold());
+        println!("├─────────────────────────────┤");
+        if datas.len() == 0 {
+            println!("│ {:<28}│", "No archive");
+        } else {
+            for f in datas {
+                println!("│ {:<28}│", f);
+            }
         }
-        println!("└-----------------------------┘");
+        println!("└─────────────────────────────┘");
     }
-    /// view balance
+    /// view the balance (credit/debit/balance)
     pub fn view_balance(balance: &BalanceResult) {
-        println!("┌---------------------------┐");
-        println!("|codexi balance summary     |");
-        println!("├--------┌------------------┤");
-        println!("|Credit  |{:>18}|", format!("{:.2}", balance.credit).separate_with_commas());
-        println!("|Debit   |{:>18}|", format!("{:.2}", balance.debit).separate_with_commas());
-        println!("|Balance |{:>18}|", format!("{:.2}", balance.total).separate_with_commas());
-        println!("└--------└------------------┘");
+        println!("┌───────────────────────────┐");
+        println!("│ {}    │", "codexi balance summary".cyan().bold());
+        println!("├────────┬──────────────────┤");
+        println!("│Credit  │{:>18}│", format!("{:.2}", balance.credit).separate_with_commas().green());
+        println!("│Debit   │{:>18}│", format!("{:.2}", balance.debit).separate_with_commas().red());
+        println!("│Balance │{:>18}│", format!("{:.2}", balance.total).separate_with_commas().yellow().bold());
+        println!("└────────┴──────────────────┘");
     }
-    /// view search results
+    /// view of the search results
     pub fn view_search(rows: &[SearchItem]){
-        println!("┌-----------------------------------------------------------------------------------------------┐");
-        println!("|{:<95}|", "Operation(s)");
-        println!("├-----------------------------------------------------------------------------------------------┤");
-        println!("|Index  |Date      | Type  |           Montant|           Balance|Description                   |");
-        println!("├-------|----------|-------|------------------|------------------|------------------------------┤");
+        println!("┌───────────────────────────────────────────────────────────────────────────────────────────────┐");
+        let title_text = format!("{:<94}", "Operation(s)");
+        println!("│ {}│", title_text.bold().cyan());
+        println!("├───────┬──────────┬───────┬──────────────────┬──────────────────┬──────────────────────────────┤");
+        println!("│Index  │Date      │ Type  │           Montant│           Balance│Description                   │");
+        println!("├───────┼──────────┼───────┼──────────────────┼──────────────────┼──────────────────────────────┤");
 
         for item in rows {
+            // Determine the color according to the flow (credit/debit)
+            let amount_str = format!("{:.2}", item.op.amount).separate_with_commas();
+            let amount_style = match item.op.flow {
+                OperationFlow::Credit => Style::new().green(),
+                OperationFlow::Debit  => Style::new().red(),
+                OperationFlow::None   => Style::new().dimmed(),
+            };
+            let colored_amount = amount_str.style(amount_style);
+
+            let index_style = Style::new().dimmed();
+            let index_str = format!("#{}", item.index);
+            let colored_index = index_str.style(index_style);
+
             println!(
-                "|#{:<6}|{}|{}|{:>18}|{:>18}|{:<30}|",
-                item.index,
+                "│{:<7}│{}│{}│{:>18}│{:>18}│{:<30}│",
+                colored_index,
                 item.op.date,
                 item.op.flow,
-                format!("{:.2}", item.op.amount).separate_with_commas(),
-                format!("{:.2}", item.balance).separate_with_commas(),
+                colored_amount,
+                format!("{:.2}", item.balance).separate_with_commas().yellow(),
                 Self::truncate_desc(&item.op.description, 30),
             );
         }
 
-        println!("└-------└----------└-------└------------------└------------------└------------------------------┘");
+        let note_style = Style::new().blue().italic();
+
+        println!("└───────┴──────────┴───────┴──────────────────┴──────────────────┴──────────────────────────────┘");
         println!();
         println!("Total operations found: {}", rows.len());
         println!();
-        println!("Note: Descriptions longer than 30 characters are truncated with '...'.");
-        println!("Remember to regularly perform closing operations to maintain accurate financial records.");
+        println!("{}", "Note: Descriptions longer than 30 characters are truncated with '...'.".style(note_style));
+        println!("{}", "Remember to regularly perform closing operations to maintain accurate financial records.".style(note_style));
         println!();
     }
-    /// view resume
+    /// view to resume the codexi
     pub fn view_resume(resume: &ResumeResult) {
 
-        println!("┌-------------------------------------------------------------------------------┐");
-        println!("|codexi resume                                                                  |");
-        println!("├----------------------┬--------------------------------------------------------┤");
-        println!("|number of transactions|{:>18}| latest date transations: {:>10} |", resume.current_nb_transaction, resume.latest_transaction_date);
-        println!("|number of init        |{:>18}| latest date init:        {:>10} |", resume.current_nb_init, resume.latest_init_date);
-        println!("|number of adjustments |{:>18}| latest date adjustment:  {:>10} |", resume.current_nb_adjust, resume.latest_adjust_date);
-        println!("|number of closings    |{:>18}| latest date closing:     {:>10} |", resume.current_nb_close, resume.latest_close_date);
-        println!("|total operations      |{:>18}|                                     |", resume.current_nb_transaction+resume.current_nb_init+resume.current_nb_adjust+resume.current_nb_close);
-        println!("|current balance       |{:>18}|                                     |", format!("{:.2}", resume.current_balance).separate_with_commas());
-        println!("└----------------------└------└-------------------------------------------------┘");
+        let title_style = Style::new().cyan().bold();
+        let label_style = Style::new().dimmed();
+        let value_style = Style::new().yellow();
+        let note_style = Style::new().blue().italic();
+
+        println!("┌────────────────────────────────────────────────────────────────────────────────┐");
+        let title_text = format!("{:<79}", "codexi resume");
+        println!("│ {}│", title_text.style(title_style));
+        println!("├──────────────────────┬──────────────────┬──────────────────────────────────────┤");
+        println!("│{:<22}│{:>18}│ latest date transactions: {:>10} │",
+                "number of transactions".style(label_style),
+                resume.current_nb_transaction,
+                resume.latest_transaction_date.style(value_style));
+
+        println!("│{:<22}│{:>18}│ latest date init: {:>18} │",
+                "number of init".style(label_style),
+                resume.current_nb_init,
+                resume.latest_init_date.style(value_style));
+
+        println!("│{:<22}│{:>18}│ latest date adjustment: {:>12} │",
+                "number of adjustments".style(label_style),
+                resume.current_nb_adjust,
+                resume.latest_adjust_date.style(value_style));
+
+        println!("│{:<22}│{:>18}│ latest date closing: {:>15} │",
+                "number of closings ".style(label_style),
+                resume.current_nb_close,
+                resume.latest_close_date.style(value_style));
+
+        println!("│{:<22}│{:>18}│                                      │",
+            "total operations".style(label_style),
+            resume.current_nb_op.style(value_style).bold());
+
+        println!("│{:<22}│{:>18}│                                      │",
+            "current balance".style(label_style),
+            format!("{:.2}", resume.current_balance).separate_with_commas().style(value_style).bold());
+
+        println!("└──────────────────────┴──────────────────┴──────────────────────────────────────┘");
         println!();
-        println!("Note: 'latest date' corresponds to the most recent date for each operation type.");
-        println!("Remember to regularly perform closing operations to maintain accurate financial records.");
+        println!("{}", "Note: 'latest date' corresponds to the most recent date for each operation type.".style(note_style));
+        println!("{}", "Remember to regularly perform closing operations to maintain accurate financial records.".style(note_style));
         println!();
     }
     /// Truncate description for display

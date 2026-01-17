@@ -25,6 +25,7 @@ pub struct ResumeResult {
     pub current_nb_init: usize,
     pub current_nb_adjust: usize,
     pub current_nb_close: usize,
+    pub current_nb_op: usize,
     pub current_balance: f64,
     pub latest_transaction_date: String,
     pub latest_init_date: String,
@@ -624,12 +625,14 @@ impl Codexi {
             }
         }
         let current_balance = self.balance(None, None, None, None, None)?.total;
+        let nb_op = nb_transaction + nb_init + nb_adjust + nb_close;
 
         Ok(ResumeResult {
             current_nb_transaction: nb_transaction,
             current_nb_init: nb_init,
             current_nb_adjust: nb_adjust,
             current_nb_close: nb_close,
+            current_nb_op: nb_op,
             current_balance,
             latest_transaction_date,
             latest_init_date,
