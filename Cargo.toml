@@ -36,3 +36,4 @@ walkdir = "2.3"
 # Others
 directories = "6.0"
 thousands = "0.2.0"
+owo-colors = "4.0"
