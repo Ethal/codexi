@@ -59,7 +59,7 @@ pub fn handle_history_command(command: HistoryCommand, paths: &DataPaths) -> Res
             msg_info!("Operation {} voided.", op_id);
         }
         HistoryCommand::Archive(archive) => match archive.command {
-            ArchiveCommand::List {} => {
+            ArchiveCommand::List => {
                 let account = codexi.get_current_account()?;
                 let results = FileManagement::list_archive(paths, account.id)?;
                 view_archive(&results);

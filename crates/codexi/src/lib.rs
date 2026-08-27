@@ -20,3 +20,5 @@ pub const CODEXI_MAGIC: [u8; 6] = *b"CODEXI";
 pub const CODEXI_DATA_FORMAT_VERSION: u16 = 3;
 // V1 to V2 : implementation multi account.
 pub const CODEXI_EXCHANGE_FORMAT_VERSION: u16 = 2;
+// V1: implementation of the a manifest for the backup.
+pub const BACKUP_FORMAT_VERSION: u16 = 1;

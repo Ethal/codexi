@@ -5,7 +5,7 @@ use inquire_derive::Selectable;
 use std::fmt;
 
 use codexi::{
-    core::{DataPaths, format_date, format_id_short, parse_id},
+    core::{DataPaths, format_date, format_id_short, get_documents_dir, parse_id},
     dto::{
         AccountCollection, AccountItem, BalanceItem, CategoryCollection, CategoryStatsCollection,
         CounterpartyCollection, CounterpartyStatsCollection, CounterpartyTreeCollection, DashboardCollection,
@@ -159,7 +159,8 @@ pub fn tui_root(paths: &DataPaths) -> Result<()> {
             TuiRoot::Counterparty => tui_counterparty(&codexi)?,
             TuiRoot::Category => tui_category(&codexi)?,
             TuiRoot::Backup => {
-                let target_dir = Text::new("Target directory").with_default("./backup").prompt()?;
+                let default_dir = get_documents_dir()?.to_string_lossy().into_owned();
+                let target_dir = Text::new("Target directory").with_default(&default_dir).prompt()?;
                 let target_dir_opt = Some(target_dir).filter(|s| !s.is_empty());
                 let backup_file = FileManagement::create_backup(paths, target_dir_opt.as_deref())?;
                 msg_info!("Backup completed to: {}", backup_file.display());

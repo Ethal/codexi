@@ -32,7 +32,7 @@ flate2 = { workspace = true }
 walkdir = { workspace = true }
 
 # Utilities
-directories = { workspace = true }
+dirs = { workspace = true }
 thousands = { workspace = true }
 derive_builder = { workspace = true }
 

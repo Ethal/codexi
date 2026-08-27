@@ -158,11 +158,11 @@ pub fn handle_data_command(command: DataCommand, cwd: &Path, paths: &DataPaths, 
             }
         },
         DataCommand::Snapshot(snapshot) => match snapshot.command {
-            SnapshotCommand::Create {} => {
+            SnapshotCommand::Create => {
                 FileManagement::create_snapshot(&codexi, paths)?;
                 msg_info!("Snapshot done");
             }
-            SnapshotCommand::List {} => {
+            SnapshotCommand::List => {
                 let snapshot = FileManagement::list_snapshot(paths)?;
                 view_snapshot(&snapshot);
             }

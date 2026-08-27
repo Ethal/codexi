@@ -6,10 +6,9 @@ use std::path::{Path, PathBuf};
 
 use crate::core::{format_date, format_date_time_short, format_id};
 
-// Disk structure of Codexi
 /*
+// Disk structure of Codexi (data dirctory fr.ethal.codexi)
 ├── <APP_NAME>.<EXT_MAIN>
-├── <APP_NAME>.<EXT_CFG>
 ├── <DIR_ARCHIVES>
 │   └── <ACCOUNT_ID>
 │       ├── <ACCOUNT_ID>_<APP_NAME>_<YYYY>-<MM>-<DD>.<EXT_ARCHIVE>
@@ -25,6 +24,9 @@ use crate::core::{format_date, format_date_time_short, format_id};
         ├── archives/...
         ├── codexi.dat
         └── snapshots/...
+
+// Disk structure of Codexi (config dirctory fr.ethal.codexi)
+└── <APP_NAME>.<EXT_CFG>
 */
 
 /// A resolved file path with its filename
@@ -34,9 +36,10 @@ pub struct ResolvedPath {
 }
 
 pub struct DataPaths {
-    pub root: PathBuf,          // data_dir
+    pub data_root: PathBuf,     // data_dir
+    pub config_root: PathBuf,   // config_dir
     pub main_file: PathBuf,     // data_dir/codexi.dat
-    pub config_file: PathBuf,   // data_dir/codexi.cfg
+    pub config_file: PathBuf,   // config_dir/codexi.cfg
     pub archives_dir: PathBuf,  // data_dir/archives/
     pub snapshots_dir: PathBuf, // data_dir/snapshots/
     pub tmp_dir: PathBuf,       // data_dir/tmp/
@@ -45,7 +48,7 @@ pub struct DataPaths {
 
 impl DataPaths {
     pub(crate) const APP_NAME: &'static str = "codexi";
-    pub(crate) const EXT_MAIN: &'static str = "dat";
+    pub(crate) const EXT_DATA: &'static str = "dat";
     pub(crate) const EXT_CFG: &'static str = "cfg";
     pub(crate) const EXT_ARCHIVE: &'static str = "cld";
     pub(crate) const EXT_SNAPSHOT: &'static str = "snp";
@@ -54,17 +57,21 @@ impl DataPaths {
     pub(crate) const DIR_TMP: &'static str = "tmp";
     pub(crate) const DIR_TRASH: &'static str = "trash";
 
-    pub fn new(data_dir: &Path) -> Self {
-        let root = data_dir.to_path_buf();
+    pub fn new(data_dir: &Path, config_dir: &Path) -> Self {
+        let data_root = data_dir.to_path_buf();
+        let config_root = config_dir.to_path_buf();
 
         Self {
-            config_file: root.join(format!("{}.{}", Self::APP_NAME, Self::EXT_CFG)),
-            main_file: root.join(format!("{}.{}", Self::APP_NAME, Self::EXT_MAIN)),
-            archives_dir: root.join(Self::DIR_ARCHIVES),
-            snapshots_dir: root.join(Self::DIR_SNAPSHOTS),
-            tmp_dir: root.join(Self::DIR_TMP),
-            trash_dir: root.join(Self::DIR_TRASH),
-            root,
+            main_file: data_root.join(format!("{}.{}", Self::APP_NAME, Self::EXT_DATA)),
+            config_file: config_root.join(format!("{}.{}", Self::APP_NAME, Self::EXT_CFG)),
+
+            archives_dir: data_root.join(Self::DIR_ARCHIVES),
+            snapshots_dir: data_root.join(Self::DIR_SNAPSHOTS),
+            tmp_dir: data_root.join(Self::DIR_TMP),
+            trash_dir: data_root.join(Self::DIR_TRASH),
+
+            data_root,
+            config_root,
         }
     }
 

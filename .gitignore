@@ -2,6 +2,7 @@
 /target/
 /workspace/
 /backup/
+/scripts_build_codexi/
 /**/*.old
 
 # files

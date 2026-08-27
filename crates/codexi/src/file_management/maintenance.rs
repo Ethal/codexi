@@ -88,7 +88,7 @@ impl FileManagement {
 
         fs::rename(
             codexi,
-            trash_path.join(format!("{}.{}", DataPaths::APP_NAME, DataPaths::EXT_MAIN)),
+            trash_path.join(format!("{}.{}", DataPaths::APP_NAME, DataPaths::EXT_DATA)),
         )?;
 
         if snapshots.exists() {
@@ -112,7 +112,7 @@ impl FileManagement {
             )));
         }
 
-        let main_file = format!("{}.{}", DataPaths::APP_NAME, DataPaths::EXT_MAIN);
+        let main_file = format!("{}.{}", DataPaths::APP_NAME, DataPaths::EXT_DATA);
         let src_codexi = trash_snapshot.join(&main_file);
         if !src_codexi.exists() {
             return Err(FileMaintenanceError::InvalidTrashSnapshot(format!(
@@ -302,7 +302,7 @@ impl FileManagement {
             exchange_version: CODEXI_EXCHANGE_FORMAT_VERSION.to_string(),
             storage_format: StorageFormat::Ciborium,
             disk_usage,
-            data_dir: paths.root.to_string_lossy().to_string(),
+            data_dir: paths.data_root.to_string_lossy().to_string(),
         };
 
         Ok(result)

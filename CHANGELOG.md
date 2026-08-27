@@ -22,6 +22,9 @@ All notable changes to this project will be documented in this file.
 - **Cli Ui** – extract exchange rate display into dedicated 'rate' module ui/rate.rs"
 - **Dependencies** – Moved `rust_decimal_macros` from `dependencies` to `dev-dependencies` to reduce production binary size. All `dec!` macro calls replaced with direct `Decimal` constructors (e.g., `dec!(500)` → `Decimal::new(500, 0)`, `dec!(0.001)` → `Decimal::new(1, 3)`).
 - **CLI help messages** — improved clarity, consistency, and corrected wording across commands and arguments.
+- **Backup system** – added manifest with version and application metadata, now backs up both data and config directories separately.
+- **Path handling** – replaced directories with dirs crate, split data and config directories for better cross-platform compatibility.
+
 
 ### Removed
 - ⚠️ **Support** for migration from v1 and v2 (legacy).

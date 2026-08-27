@@ -395,7 +395,7 @@ fn matches_date_range(op: &Operation, from: Option<NaiveDate>, to: Option<NaiveD
 
 /// Checks whether an operation matches the search text.
 fn matches_text(op: &Operation, text: Option<&str>) -> bool {
-    text.map_or(true, |t| op.description.to_lowercase().contains(t))
+    text.is_none_or(|t| op.description.to_lowercase().contains(t))
 }
 
 pub fn search<T: OperationContainer>(container: &T, params: &SearchParams) -> Result<SearchOperationList, SearchError> {

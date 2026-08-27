@@ -138,7 +138,7 @@ pub fn handle_report_command(command: ReportCommand, cwd: &Path, paths: &DataPat
                 view_financial(&stats);
             }
         }
-        ReportCommand::Summary {} => {
+        ReportCommand::Summary => {
             let params = SearchParamsBuilder::default().build()?;
             let s_ops = search(account, &params)?;
             let summary = SummaryCollection::summary_entry(account, &s_ops);

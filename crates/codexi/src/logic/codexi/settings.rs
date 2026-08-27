@@ -2,19 +2,18 @@
 
 use serde::{Deserialize, Serialize};
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
 use crate::core::get_config_dir;
 use crate::logic::codexi::CodexiError;
 
 const SETTINGS_FILE: &str = "codexi.cfg";
 const DEFAULT_LANGUAGE: &str = "en";
-const DEFAULT_CURRENCY: &str = "USD";
+const DEFAULT_CURRENCY: &str = "EUR";
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct CodexiSettings {
     pub language: String,
-    pub data_dir: PathBuf,
     pub default_currency: String,
 }
 
@@ -22,7 +21,6 @@ impl Default for CodexiSettings {
     fn default() -> Self {
         Self {
             language: DEFAULT_LANGUAGE.to_string(),
-            data_dir: PathBuf::new(),
             default_currency: DEFAULT_CURRENCY.to_string(),
         }
     }
@@ -71,10 +69,6 @@ impl CodexiSettings {
     }
 
     fn create_defaults() -> Result<Self, CodexiError> {
-        let data_dir = crate::core::get_data_dir()?;
-        Ok(Self {
-            data_dir,
-            ..Self::default()
-        })
+        Ok(Self::default())
     }
 }

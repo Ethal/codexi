@@ -2,6 +2,7 @@
 
 use thiserror::Error;
 
+use crate::core::CoreError;
 use crate::exchange::ExchangeError;
 use crate::file_management::StorageFormat;
 use crate::logic::account::AccountError;
@@ -28,8 +29,14 @@ pub enum FileArchiveError {
 pub enum FileBackupError {
     #[error("SYS_IO: {0}")]
     Io(#[from] std::io::Error),
+    #[error("DATA_TOML: {0}")]
+    InvalidTomlDe(#[from] toml::de::Error),
+    #[error("DATA_TOML: {0}")]
+    InvalidTomlSer(#[from] toml::ser::Error),
     #[error("SYS_TAR: {0}")]
     Maintenance(#[from] FileMaintenanceError),
+    #[error("SYS_CORE: {0}")]
+    Core(#[from] CoreError),
     #[error("DATA_NO_DIR_OR_FILE: {0}")]
     NoDirOrFile(String),
     #[error("DATA_NO_RELATIVE_PATH: {0}")]
@@ -38,8 +45,10 @@ pub enum FileBackupError {
     InvalidPath(String),
     #[error("DATA_NO_BACKUP_PATH: {0}")]
     InvalidBackupPath(String),
-    #[error("DATA_NO_USER_DIR: {0}")]
-    NoUserDirectory(String),
+    #[error("DATA_NO_DOCUMENTS_DIR: {0}")]
+    NoDocumentsDirectory(String),
+    #[error("DATA_INVALID: {0}")]
+    InvalidData(String),
 }
 
 /// Error type for ledger file (codexi.dat)

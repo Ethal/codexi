@@ -21,8 +21,8 @@ pub fn view_operation(item: &SearchOperationItem) {
 
     println!("  {} {}", l("Id"), VALUE_STYLE.apply_to(&item.id));
     println!("  {} {}", l("Short"), VALUE_STYLE.apply_to(format_id_short(&item.id)));
-    println!("  {} {}", l("Date"), &item.date);
-    println!("  {} {}", l("Type"), &item.kind);
+    println!("  {} {}", l("Date"), item.date);
+    println!("  {} {}", l("Type"), item.kind);
 
     let flow_display = if item.flow == "Debit" {
         DEBIT_STYLE.apply_to(&item.flow)
@@ -51,7 +51,7 @@ pub fn view_operation(item: &SearchOperationItem) {
         CREDIT_STYLE.apply_to(&balance_str)
     };
     println!("  {} {}", l("Balance"), balance_display);
-    println!("  {} {}", l("Description"), &item.description);
+    println!("  {} {}", l("Description"), item.description);
 
     // ── Links ─────────────────────────────────────────────────
     println!();

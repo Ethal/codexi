@@ -30,6 +30,10 @@ pub enum CoreError {
     InvalidIntermediateDate(String),
     #[error("SYS_NO_DATA_DIR: {0}")]
     NoDataDirectory(String),
+    #[error("SYS_NO_CONFIG_DIR: {0}")]
+    NoConfigDirectory(String),
+    #[error("SYS_NO_DOCUMENTS_DIR: {0}")]
+    NoDocumentsDirectory(String),
     #[error("VAL_DATA: {0}")]
     InvalidData(String),
 }

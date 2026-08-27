@@ -182,7 +182,7 @@ impl Account {
 
                 // An operation cannot be voided twice
                 if target_op.links.void_by.is_some() {
-                    return Err(TemporalViolation::OperationAlreadyVoided(target_id.to_string()))?;
+                    Err(TemporalViolation::OperationAlreadyVoided(target_id.to_string()))?;
                 }
 
                 // System operations (Init, Adjust, Checkpoint) cannot be voided

@@ -26,7 +26,7 @@ mod prompts;
 mod tui;
 mod ui;
 
-use codexi::core::DataPaths;
+use codexi::core::{DataPaths, get_config_dir, get_data_dir};
 use codexi::logic::codexi::CodexiSettings;
 
 use crate::command::Cli;
@@ -41,8 +41,10 @@ pub fn clear_terminal() {
 fn main() -> Result<()> {
     let cli = Cli::parse();
 
-    let settings = CodexiSettings::load_or_create()?;
-    let paths = DataPaths::new(&settings.data_dir);
+    CodexiSettings::load_or_create()?;
+    let data_dir = get_data_dir()?;
+    let config_dir = get_config_dir()?;
+    let paths = DataPaths::new(&data_dir, &config_dir);
     let cwd = env::current_dir()?;
 
     if cli.tui {
