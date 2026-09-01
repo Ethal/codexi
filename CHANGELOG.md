@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - **Input normalization** – to sanitize CLI input from external sources (Unicode whitespace, control chars).
 - **CLI command `--tui`** – a simple TUI for quick access of overviezw, view, report, account, counterparty, category, backup.
 - **Codexi::Rebuild** – reconstruct the exchange rate on tranfer operation.
+* **CLI command `settings`** – added `settings view` and `settings set` commands to view and update Codexi language and default currency settings.
 - **Cli Ui** – add a note in the report of the counterparty related to the tranfer operation`s.  
 - **Cli Ui** – add counterparty in `operation view`.
 - **Cli Ui** – add data direcroy in `admin infos`.
@@ -19,6 +20,9 @@ All notable changes to this project will be documented in this file.
 - **`view_account_context`, `view_category`** – improved views, minor fixes.
 - ⚠️ **Search balance** – introduced filtered running balance (does not reflect global account/operation balance).
 - ⚠️ **Backup** – replace ZIP archives with tar + gz compression
+* **Cli Ui** – extracted Codexi information and settings views into dedicated UI modules.
+* **Cli Ui** – extracted shared formatting and display helpers into a dedicated helpers module
+* **CLI help messages** – renamed account `set-context` description from "Configure account context" to "Set account context" for clearer wording.
 - **Cli Ui** – extract exchange rate display into dedicated 'rate' module ui/rate.rs"
 - **Dependencies** – Moved `rust_decimal_macros` from `dependencies` to `dev-dependencies` to reduce production binary size. All `dec!` macro calls replaced with direct `Decimal` constructors (e.g., `dec!(500)` → `Decimal::new(500, 0)`, `dec!(0.001)` → `Decimal::new(1, 3)`).
 - **CLI help messages** — improved clarity, consistency, and corrected wording across commands and arguments.

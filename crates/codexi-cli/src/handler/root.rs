@@ -31,6 +31,7 @@ use crate::{
         category::handle_category_command, counterparty::handle_counterparty_command,
         currency::handle_currency_command, data::handle_data_command, history::handle_history_command,
         loan::handle_loan_command, operation::handle_operation_command, report::handle_report_command,
+        settings::handle_settings_command,
     },
     msg_info, msg_warn,
     ui::overview_account,
@@ -275,6 +276,7 @@ pub fn handle_root_command(cli: Cli, paths: &DataPaths, cwd: &Path) -> Result<()
                 view_search(&search_items);
             }
         }
+        RootCommand::Settings(args) => handle_settings_command(args.command, paths)?,
         RootCommand::Operation(args) => handle_operation_command(args.command, paths)?,
         RootCommand::Report(args) => handle_report_command(args.command, cwd, paths)?,
         RootCommand::Data(args) => handle_data_command(args.command, cwd, paths, skip_confirm)?,

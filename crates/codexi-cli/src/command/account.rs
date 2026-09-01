@@ -106,7 +106,7 @@ pub enum AccountCommand {
         update_operation: bool,
     },
 
-    /// Configure account context (limits, rules, constraints)
+    /// Set account context (limits, rules, constraints)
     SetContext {
         /// Overdraft limit (e.g., 500.00)
         #[arg(short = 'o', long, value_name = "AMOUNT", help = "Overdraft limit (e.g., 500.00)")]

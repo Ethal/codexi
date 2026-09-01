@@ -28,7 +28,6 @@ impl Default for CodexiSettings {
 
 impl CodexiSettings {
     /// Load settings from config file, or create with defaults if absent.
-    /// On creation, resolves data_dir via ProjectDirs and persists the file.
     pub fn load_or_create() -> Result<Self, CodexiError> {
         let config_dir = get_config_dir()?;
         let config_file = config_dir.join(SETTINGS_FILE);

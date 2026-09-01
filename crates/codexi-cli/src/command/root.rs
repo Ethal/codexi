@@ -13,6 +13,7 @@ use crate::command::history::HistoryArgs;
 use crate::command::loan::LoanArgs;
 use crate::command::operation::OperationArgs;
 use crate::command::report::ReportArgs;
+use crate::command::settings::SettingsArgs;
 
 #[derive(Parser, Debug)]
 #[command(
@@ -295,6 +296,9 @@ pub enum RootCommand {
         #[arg(long, help = "Open result in the default browser")]
         open: bool,
     },
+
+    /// Codexi Settings
+    Settings(SettingsArgs),
 
     /// Manage operations
     Operation(OperationArgs),

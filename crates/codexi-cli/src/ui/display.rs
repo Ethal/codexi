@@ -6,12 +6,11 @@ use thousands::Separable;
 use codexi::{
     core::{CoreWarning, format_id_short, format_optional_text},
     dto::{DashboardCollection, SearchOperationCollection, SummaryCollection},
-    file_management::CodexiInfos,
 };
 
 use crate::ui::{
     CREDIT_STYLE, DEBIT_STYLE, NOTE_STYLE, STYLE_DANGER, STYLE_MUTED, STYLE_NORMAL, TITLE_STYLE, VALUE_STYLE,
-    draw_savings_bar, label, truncate_text,
+    draw_savings_bar, format_ui_left_decimal, truncate_text,
 };
 
 pub fn view_warning(warnings: &[CoreWarning]) {
@@ -20,77 +19,6 @@ pub fn view_warning(warnings: &[CoreWarning]) {
     for warn in warnings {
         println!(" {}", warn);
     }
-}
-
-/// view of the codexi infos.
-pub fn view_codexi_infos(datas: &CodexiInfos) {
-    println!();
-    println!("📒 {}", TITLE_STYLE.apply_to("Infos"));
-    println!("{}", "─".repeat(80));
-    println!("  {} {}", label("Data version", 18), datas.data_version);
-    println!("  {} {}", label("Exchange version", 18), datas.exchange_version);
-    println!("  {} {}", label("Storage format", 18), datas.storage_format);
-    println!("  {} {}", label("data directory", 18), datas.data_dir);
-
-    println!();
-    println!("💰 {}", TITLE_STYLE.apply_to("Codexi"));
-    println!("{}", "─".repeat(80));
-    println!("  {} {}", label("Accounts", 27), datas.codexi_account_count);
-    println!(
-        "  {} {}",
-        label("Operations(incl. archives)", 27),
-        datas.codexi_operation_count
-    );
-    println!("  {} {}", label("Banks", 27), datas.codexi_bank_count);
-    println!("  {} {}", label("Currencies", 27), datas.codexi_currency_count);
-    println!("  {} {}", label("Categories", 27), datas.codexi_category_count);
-    println!("  {} {}", label("Counterparty", 27), datas.codexi_counterparty_count);
-    println!();
-    let usage = &datas.disk_usage;
-    println!("📦 {}", TITLE_STYLE.apply_to("Disk usage"));
-    println!("{}", "─".repeat(80));
-    println!("  data_dir/");
-    println!(
-        "    {:<18} {:<10}",
-        STYLE_MUTED.apply_to("codexi.dat"),
-        VALUE_STYLE.apply_to(format_bytes(usage.data_dir.codexi.size_bytes))
-    );
-    println!(
-        "    {:<18} {:<10} {} files",
-        STYLE_MUTED.apply_to("snapshots/"),
-        VALUE_STYLE.apply_to(format_bytes(usage.data_dir.snapshots.total_bytes)),
-        usage.data_dir.snapshots.file_count
-    );
-    println!(
-        "    {:<18} {:<10} {} account, {} files",
-        STYLE_MUTED.apply_to("archives/"),
-        VALUE_STYLE.apply_to(format_bytes(usage.data_dir.archives.total_bytes)),
-        usage.data_dir.archives.account_count,
-        usage.data_dir.archives.file_count
-    );
-    println!("  {}", "─".repeat(30));
-    println!(
-        "  {:<20} {:<10}",
-        STYLE_MUTED.apply_to("total data_dir"),
-        VALUE_STYLE.apply_to(format_bytes(usage.data_dir.total_bytes))
-    );
-
-    println!();
-    println!(
-        "  {:<20} {:<10} {} restore points",
-        STYLE_MUTED.apply_to("trash/"),
-        VALUE_STYLE.apply_to(format_bytes(usage.trash.total_bytes)),
-        usage.trash.restore_point_count
-    );
-
-    println!();
-    println!("{}", "─".repeat(80));
-    println!(
-        "  {:<20} {}",
-        TITLE_STYLE.apply_to("TOTAL"),
-        VALUE_STYLE.apply_to(format_bytes(usage.total_bytes))
-    );
-    println!();
 }
 
 /// view to list the snapshot file
@@ -417,26 +345,4 @@ pub fn view_dashboard(d: &DashboardCollection) {
     }
 
     println!();
-}
-
-fn format_ui_left_decimal(value: Decimal, dec_place: usize) -> String {
-    format!("{:.dec_place$}", value).separate_with_commas()
-}
-
-fn format_bytes(bytes: u64) -> String {
-    const KB: f64 = 1024.0;
-    const MB: f64 = KB * 1024.0;
-    const GB: f64 = MB * 1024.0;
-
-    let b = bytes as f64;
-
-    if b < KB {
-        format!("{} B", bytes)
-    } else if b < MB {
-        format!("{:.2} KB", b / KB)
-    } else if b < GB {
-        format!("{:.2} MB", b / MB)
-    } else {
-        format!("{:.2} GB", b / GB)
-    }
 }

@@ -12,5 +12,6 @@ mod loan;
 mod operation;
 mod report;
 mod root;
+mod settings;
 
 pub use root::handle_root_command;

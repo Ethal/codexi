@@ -65,6 +65,19 @@ impl Codexi {
             note: None,
         })
     }
+    pub fn set_settings(
+        &mut self,
+        language: Option<&str>,
+        currency: Option<&str>,
+    ) -> Result<CodexiSettings, CodexiError> {
+        self.settings.default_currency = currency.unwrap_or(&self.settings.default_currency).to_string();
+        self.settings.language = language.unwrap_or(&self.settings.language).to_string();
+        let settings = CodexiSettings {
+            language: self.settings.language.clone(),
+            default_currency: self.settings.default_currency.clone(),
+        };
+        Ok(settings)
+    }
     pub fn get_account_by_id(&self, id: &Nulid) -> Result<&Account, CodexiError> {
         self.accounts
             .iter()

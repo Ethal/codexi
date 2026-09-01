@@ -4,9 +4,11 @@ mod account;
 mod balance;
 mod bank;
 mod category;
+mod codexi;
 mod counterparty;
 mod currency;
 mod display;
+mod helpers;
 mod loan;
 mod operation;
 mod rate;
@@ -17,9 +19,11 @@ pub use account::*;
 pub use balance::*;
 pub use bank::view_bank;
 pub use category::*;
+pub use codexi::*;
 pub use counterparty::*;
 pub use currency::view_currency;
 pub use display::*;
+pub use helpers::*;
 pub use loan::*;
 pub use operation::*;
 pub use rate::*;
@@ -37,68 +41,3 @@ const STYLE_CAUTION: Style = Style::new().magenta().bold();
 const DEBIT_STYLE: Style = Style::new().red();
 const CREDIT_STYLE: Style = Style::new().green();
 const VALUE_STYLE: Style = Style::new().yellow().bold();
-
-/// Truncate text for ui
-pub(crate) fn truncate_text(desc: &str, max_width: usize) -> String {
-    // If the visible length is already OK → simple formatting
-    if desc.chars().count() <= max_width {
-        return format!("{:<width$}", desc, width = max_width);
-    }
-
-    // Otherwise → truncate without ever breaking a UTF-8 character
-    let visible = max_width.saturating_sub(3);
-
-    let truncated: String = desc.chars().take(visible).collect();
-
-    format!("{:<width$}", format!("{}...", truncated), width = max_width)
-}
-
-pub(crate) fn label(text: &str, width: usize) -> impl std::fmt::Display {
-    STYLE_MUTED.apply_to(format!("{:<width$}", text, width = width))
-}
-
-/// Utility function for the visual toolbar — centered on 0
-/// [-100%  ░░░░████|░░░░░░░░  +100%]
-use console::style;
-use rust_decimal::Decimal;
-use rust_decimal::prelude::ToPrimitive;
-
-pub(crate) fn draw_savings_bar(rate: Decimal, width: usize) -> String {
-    let half = width / 2;
-    let normalized = rate.abs().min(Decimal::ONE_HUNDRED) / Decimal::ONE_HUNDRED;
-    let filled = (normalized * Decimal::from(half)).to_usize().unwrap_or(0);
-    let empty = half - filled;
-
-    if rate <= Decimal::ZERO {
-        // negative: fill grows left from center
-        format!(
-            "{}{}|{}",
-            style("░".repeat(empty)).dim(),
-            style("█".repeat(filled)).red(),
-            style("░".repeat(half)).dim(),
-        )
-    } else {
-        // positive: fill grows right from center
-        format!(
-            "{}|{}{}",
-            style("░".repeat(half)).dim(),
-            style("█".repeat(filled)).green(),
-            style("░".repeat(empty)).dim(),
-        )
-    }
-}
-
-use codexi::dto::{BankItem, CurrencyItem};
-pub fn format_optional_currency_item(currency: &Option<CurrencyItem>) -> String {
-    match currency {
-        Some(c) => c.code.to_string(),
-        None => "─".to_string(),
-    }
-}
-
-pub fn format_optional_bank_item(bank: &Option<BankItem>) -> String {
-    match bank {
-        Some(b) => b.name.to_string(),
-        None => "─".to_string(),
-    }
-}
